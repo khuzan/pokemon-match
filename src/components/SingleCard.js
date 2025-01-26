@@ -18,6 +18,7 @@ export default function SingleCard({ card, handleChoice, flipped, disabled }) {
           alt="card back"
         />
       </div>
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/25.png"></img>
     </div>
   )
 }

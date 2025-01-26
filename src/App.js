@@ -12,11 +12,54 @@ const cardImages = [
 ];
 
 function App() {
-  const [cards, setCards] = useState([])
-  const [turns, setTurns] = useState(0)
-  const [choiceOne, setChoiceOne] = useState(null)
-  const [choiceTwo, setChoiceTwo] = useState(null)
-  const [disabled, setDisabled] = useState(false)
+  const [cards, setCards] = useState([]);
+  const [turns, setTurns] = useState(0);
+  const [choiceOne, setChoiceOne] = useState(null);
+  const [choiceTwo, setChoiceTwo] = useState(null);
+  const [disabled, setDisabled] = useState(false);
+
+  //get random indices
+  const fetchPokemon = async () => {
+    try {
+      const response = await fetch("https://pokeapi.co/api/v2/pokemon/");
+
+      if (!response.ok) {
+        throw new Error("Could not fetch data from API");
+      }
+
+      const data = await response.json();
+      const pokemons = data.results;
+      getDataSlice(pokemons);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const getDataSlice = (pokemons) => {
+    const randomIndices = getRandomIndices(pokemons);
+
+    const dataSlice = randomIndices.map((index) => pokemons[index]);
+    const x  = [...dataSlice]
+    .map((z) => ({ ...z, src: `https://img.pokemondb.net/artwork/${z.name}.jpg` }));
+
+    console.log('slice:', x)
+    return dataSlice;
+  };
+
+  const getRandomIndices = (pokemons) => {
+    const randomIndicesArray = [];
+
+    for (let i = 0; i < 5; i++) {
+      const randomNum = Math.floor(Math.random() * pokemons.length);
+      if (!randomIndicesArray.includes(randomNum)) {
+        randomIndicesArray.push(randomNum);
+      } else {
+        i--;
+      }
+    }
+    console.log("random", randomIndicesArray);
+    return randomIndicesArray;
+  };
 
   //shuffle cards
   const shuffleCards = () => {
@@ -24,8 +67,8 @@ function App() {
       .sort(() => Math.random() - 0.5)
       .map((card) => ({ ...card, id: Math.random() }));
 
-    setChoiceOne(null)
-    setChoiceTwo(null)
+    setChoiceOne(null);
+    setChoiceTwo(null);
     setCards(shuffledCards);
     setTurns(0);
   };
@@ -38,7 +81,7 @@ function App() {
   //compare 2 selected cards
   useEffect(() => {
     if (choiceOne && choiceTwo) {
-      setDisabled(true)
+      setDisabled(true);
       if (choiceOne.src === choiceTwo.src) {
         setCards((prevCards) => {
           return prevCards.map((card) => {
@@ -51,7 +94,7 @@ function App() {
         });
         resetTurn();
       } else {
-        setTimeout(() => resetTurn(), 1000)
+        setTimeout(() => resetTurn(), 1000);
       }
     }
   }, [choiceOne, choiceTwo]);
@@ -60,12 +103,13 @@ function App() {
     setChoiceOne(null);
     setChoiceTwo(null);
     setTurns((prevTurns) => prevTurns + 1);
-    setDisabled(false)
+    setDisabled(false);
   };
-  
+
   useEffect(() => {
-    shuffleCards()
-  }, [])
+    shuffleCards();
+    fetchPokemon();
+  }, []);
 
   return (
     <div className="App">
