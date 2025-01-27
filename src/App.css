@@ -2,6 +2,13 @@
   max-width: 860px;
   margin: 40px auto;
 }
+/* .container {
+  width: 1200px;
+  border-color: #c23866;
+  border-style: dotted;
+  display: grid;
+  grid-template-columns: 50px 1fr;
+} */
 button {
   background: none;
   border: 2px solid #fff;
@@ -19,6 +26,12 @@ button:hover {
 .card-grid {
   margin-top: 40px;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  grid-gap: 20px;
+  grid-template-columns: repeat(5, 19%);
+  grid-gap: 15px;
+}
+
+.card-record {
+  position: absolute;
+  left: 15%;
+  top: 50%;
 }
