@@ -1,4 +1,5 @@
 import "./SingleCard.css";
+import pokemon_card_backside from "../../img/pokemon_card_backside.png"
 
 export default function SingleCard({ card, handleChoice, flipped, disabled }) {
   const handleClick = () => {
@@ -13,7 +14,7 @@ export default function SingleCard({ card, handleChoice, flipped, disabled }) {
         <img className="front" src={card.images.small} alt="card front" />
         <img
           className="back"
-          src="/img/pokemon_card_backside.png"
+          src={pokemon_card_backside}
           onClick={handleClick}
           alt="card back"
         />

@@ -1,15 +1,9 @@
 import "./App.css";
 import { useState, useEffect } from "react";
-import SingleCard from "./components/SingleCard";
-
-// const cardImages = [
-//   { src: "/img/helmet-1.png", matched: false },
-//   { src: "/img/potion-1.png", matched: false },
-//   { src: "/img/ring-1.png", matched: false },
-//   { src: "/img/scroll-1.png", matched: false },
-//   { src: "/img/shield-1.png", matched: false },
-//   { src: "/img/sword-1.png", matched: false },
-// ];
+import SingleCard from "./components/singlecard/SingleCard";
+import Mechanics from "./components/mechanics/Mechanics";
+import GameOver from "./components/gameover/GameOver";
+import logo from "./img/pokemon_match.png"
 
 function App() {
   const [cards, setCards] = useState([]);
@@ -20,22 +14,24 @@ function App() {
   const [disabled, setDisabled] = useState(false);
   const [score, setScore] = useState(0);
   const [energy, setEnergy] = useState(100);
+  const [showCard, setShowCard] = useState(false);
 
   //fetch pokemon api
   const fetchPokemon = async () => {
     const newArray = [];
     try {
       const response = await fetch(
-        "https://api.pokemontcg.io/v2/cards?pageSize=40"
+        "https://api.pokemontcg.io/v2/cards?pageSize=30"
       );
 
       if (!response.ok) {
         throw new Error("Could not fetch data from API");
+      }else{
+        const tcgraw = await response.json();
+        const data = tcgraw.data;
+        const pokemons = [...data].map((d) => ({ ...d, matched: false }));
+        getDataSlice(pokemons);
       }
-      const tcgraw = await response.json();
-      const data = tcgraw.data;
-      const pokemons = [...data].map((d) => ({ ...d, matched: false }));
-      getDataSlice(pokemons);
       
     } catch (err) {
       console.error(err);
@@ -71,6 +67,7 @@ function App() {
   const shuffleCards = () => {
     setEnergy(100);
     setScore(0);
+    setShowCard(true)
     const shuffledCards = [...cardImages, ...cardImages]
       .sort(() => Math.random() - 0.5)
       .map((card) => ({ ...card, id: Math.random() }));
@@ -86,6 +83,11 @@ function App() {
     choiceOne ? setChoiceTwo(card) : setChoiceOne(card);
   };
 
+  useEffect(() => {
+    fetchPokemon();
+  }, []);
+
+
   //compare 2 selected cards
   useEffect(() => {
     if (choiceOne && choiceTwo) {
@@ -94,19 +96,20 @@ function App() {
         setCards((prevCards) => {
           return prevCards.map((card) => {
             if (card.name === choiceOne.name) {
-              setEnergy(energy+10)
-              setScore(score+1)
+              setEnergy(energy + 10);
+              setScore(score + 1);
               return { ...card, matched: true };
             } else {
               return card;
             }
           });
         });
-        
         resetTurn();
       } else {
-        setEnergy(energy-20)
-        setTimeout(() => resetTurn(), 1000);
+        setTimeout(() => {
+          setEnergy(energy - 20)
+          resetTurn()
+        },1000);
       }
     }
   }, [choiceOne, choiceTwo]);
@@ -117,32 +120,31 @@ function App() {
     setTurns((prevTurns) => prevTurns + 1);
     setDisabled(false);
   };
-  
-  useEffect(() => {
-    fetchPokemon();
-    shuffleCards();
-  }, []);
+
 
   return (
     <div className="App">
-      <h1>Pokemon Match</h1>
-      <button onClick={shuffleCards}>New Game</button>
-
-      <div className="card-record">
-        <p>Energy: {energy}%</p>
-        <p>Score: {score}</p>
-        <p>Turns: {turns}</p>
-      </div>
-      <div className="card-grid">
-        {cards.map((card) => (
-          <SingleCard
-            key={card.id}
-            card={card}
-            handleChoice={handleChoice}
-            flipped={card === choiceOne || card === choiceTwo || card.matched}
-            disabled={disabled}
-          />
-        ))}
+      <img src={logo} alt="pokemon match" />
+      
+      { showCard ? null: <Mechanics shuffleCards={shuffleCards}/> }
+      { (energy == 0) ? <GameOver/> : null }
+      <div className={showCard && (energy > 0) ? 'show' : 'hidden'} >
+        <div className="card-record">
+          <p>Energy: {energy}%</p>
+          <p>Turns: {turns}</p>
+          <p>Score: {score}</p>
+        </div>
+        <div className="card-grid">
+          {cards.map((card) => (
+            <SingleCard
+              key={card.id}
+              card={card}
+              handleChoice={handleChoice}
+              flipped={card === choiceOne || card === choiceTwo || card.matched}
+              disabled={disabled}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

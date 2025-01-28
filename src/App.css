@@ -31,7 +31,15 @@ button:hover {
 }
 
 .card-record {
-  position: absolute;
-  left: 15%;
-  top: 50%;
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.show {
+  visibility: visible;
+}
+
+.hidden {
+  visibility: hidden;
 }
