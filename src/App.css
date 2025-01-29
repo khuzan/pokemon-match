@@ -33,9 +33,11 @@ button:hover {
 .card-record {
   position: relative;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 20px;
+  border: 1px solid #fff;
+  font-weight: 600;
 }
-
 .show {
   visibility: visible;
 }

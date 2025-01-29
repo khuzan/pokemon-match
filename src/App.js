@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import SingleCard from "./components/singlecard/SingleCard";
 import Mechanics from "./components/mechanics/Mechanics";
 import GameOver from "./components/gameover/GameOver";
-import logo from "./img/pokemon_match.png"
+import logo from "./img/pokemon_match.png";
 
 function App() {
   const [cards, setCards] = useState([]);
@@ -16,6 +16,7 @@ function App() {
   const [energy, setEnergy] = useState(100);
   const [showCard, setShowCard] = useState(false);
 
+
   //fetch pokemon api
   const fetchPokemon = async () => {
     const newArray = [];
@@ -26,13 +27,12 @@ function App() {
 
       if (!response.ok) {
         throw new Error("Could not fetch data from API");
-      }else{
+      } else {
         const tcgraw = await response.json();
         const data = tcgraw.data;
         const pokemons = [...data].map((d) => ({ ...d, matched: false }));
         getDataSlice(pokemons);
       }
-      
     } catch (err) {
       console.error(err);
     }
@@ -65,17 +65,17 @@ function App() {
 
   //shuffle cards
   const shuffleCards = () => {
-    setEnergy(100);
-    setScore(0);
-    setShowCard(true)
     const shuffledCards = [...cardImages, ...cardImages]
       .sort(() => Math.random() - 0.5)
       .map((card) => ({ ...card, id: Math.random() }));
 
+    setEnergy(100);
+    setTurns(0);
+    setScore(0);
+    setShowCard(true);
     setChoiceOne(null);
     setChoiceTwo(null);
     setCards(shuffledCards);
-    setTurns(0);
   };
 
   //hand choice
@@ -86,7 +86,6 @@ function App() {
   useEffect(() => {
     fetchPokemon();
   }, []);
-
 
   //compare 2 selected cards
   useEffect(() => {
@@ -107,9 +106,9 @@ function App() {
         resetTurn();
       } else {
         setTimeout(() => {
-          setEnergy(energy - 20)
-          resetTurn()
-        },1000);
+          setEnergy(energy - 20);
+          resetTurn();
+        }, 1000);
       }
     }
   }, [choiceOne, choiceTwo]);
@@ -121,18 +120,21 @@ function App() {
     setDisabled(false);
   };
 
-
   return (
     <div className="App">
       <img src={logo} alt="pokemon match" />
-      
-      { showCard ? null: <Mechanics shuffleCards={shuffleCards}/> }
-      { (energy == 0) ? <GameOver/> : null }
-      <div className={showCard && (energy > 0) ? 'show' : 'hidden'} >
+
+      {showCard ? null : <Mechanics shuffleCards={shuffleCards} />}
+      {energy <= 0 ? <GameOver shuffleCards={shuffleCards} /> : null}
+      <div className={showCard && energy > 0 ? "show" : "hidden"}>
         <div className="card-record">
-          <p>Energy: {energy}%</p>
-          <p>Turns: {turns}</p>
-          <p>Score: {score}</p>
+          <span>
+            <p>Turns: {turns}</p>
+            <p>Score: {score}</p>
+          </span>
+          <span>
+            <p>Energy: <progress value={energy} max="100" /> {energy}%</p>
+          </span>
         </div>
         <div className="card-grid">
           {cards.map((card) => (
