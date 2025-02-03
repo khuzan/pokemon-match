@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/pokemon-match/static/css/main.7cbb5732.css",
+    "main.js": "/pokemon-match/static/js/main.509dbbe4.js",
+    "static/media/pokemon_card_backside.png": "/pokemon-match/static/media/pokemon_card_backside.262824f6e6a198aeee9b.png",
+    "static/media/bg.jpg": "/pokemon-match/static/media/bg.fb93d04c51d9e9a2b969.jpg",
+    "static/media/pokemon_match.png": "/pokemon-match/static/media/pokemon_match.00db3b2ffe3f37aefa02.png",
+    "index.html": "/pokemon-match/index.html",
+    "main.7cbb5732.css.map": "/pokemon-match/static/css/main.7cbb5732.css.map",
+    "main.509dbbe4.js.map": "/pokemon-match/static/js/main.509dbbe4.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.7cbb5732.css",
+    "static/js/main.509dbbe4.js"
+  ]
+}
